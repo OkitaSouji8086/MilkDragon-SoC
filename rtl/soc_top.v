@@ -686,7 +686,7 @@ module soc_top #(
       .awprot            (axi_cdc_i_awprot),
       .awvalid           (axi_cdc_i_awvalid),
       .awready           (axi_cdc_i_awready),
-      .wid               (axi_cdc_i_wid),
+      .wid               (),
       .wdata             (axi_cdc_i_wdata),
       .wstrb             (axi_cdc_i_wstrb),
       .wlast             (axi_cdc_i_wlast),
