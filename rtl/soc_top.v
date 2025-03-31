@@ -359,30 +359,30 @@ module soc_top #(
 
       assign cpu_clk = clk_sim;
       assign sys_clk = clk;
-      rst_sync U_rst_sys (
+      rst_sync u_rst_sys (
           .clk(sys_clk),
           .rst_n_in(~reset),
           .rst_n_out(sys_resetn)
       );
-      rst_sync U_rst_cpu (
+      rst_sync u_rst_cpu (
           .clk(cpu_clk),
           .rst_n_in(sys_resetn),
           .rst_n_out(cpu_resetn)
       );
     end else begin : pll_clk
-      clk_pll U_clk_pll (
+      clk_pll u_clk_pll (
           .cpu_clk(cpu_clk),
           .sys_clk(sys_clk),
           .resetn (~reset),
           .locked (pll_locked),
           .clk_in1(clk)
       );
-      rst_sync U_rst_sys (
+      rst_sync u_rst_sys (
           .clk(sys_clk),
           .rst_n_in(pll_locked),
           .rst_n_out(sys_resetn)
       );
-      rst_sync U_rst_cpu (
+      rst_sync u_rst_cpu (
           .clk(cpu_clk),
           .rst_n_in(sys_resetn),
           .rst_n_out(cpu_resetn)
@@ -394,7 +394,7 @@ module soc_top #(
   //--------------------------------------------------------------------------------
   // BUS MATRIX
   //--------------------------------------------------------------------------------
-  Axi_CDC U_Axi_CDC (
+  Axi_CDC u_Axi_CDC (
       .axiInClk      (cpu_clk),
       .axiInRst      (cpu_resetn),
       .axiOutClk     (sys_clk),
@@ -470,7 +470,7 @@ module soc_top #(
       .axiOut_rresp  (axi_cdc_o_rresp),
       .axiOut_rlast  (axi_cdc_o_rlast)
   );
-  AxiCrossbar_1x4 U_AxiCrossbar_1x4 (
+  AxiCrossbar_1x4 u_AxiCrossbar_1x4 (
       .axiIn_awvalid   (axi_cdc_o_awvalid),
       .axiIn_awready   (axi_cdc_o_awready),
       .axiIn_awaddr    (axi_cdc_o_awaddr),
@@ -656,7 +656,7 @@ module soc_top #(
   //--------------------------------------------------------------------------------
   core_top #(
       .TLBNUM(32)
-  ) U_core_top (
+  ) u_core_top (
       .aclk              (cpu_clk),
       .aresetn           (cpu_resetn),
       .intrpt            (intrpt),
@@ -723,7 +723,7 @@ module soc_top #(
   //--------------------------------------------------------------------------------
   // SLAVE0, SRAM
   //--------------------------------------------------------------------------------
-  axi_wrap_ram_sp_ext U_axi_wrap_ram_sp_ext (
+  axi_wrap_ram_sp_ext u_axi_wrap_ram_sp_ext (
       .aclk         (sys_clk),
       .aresetn      (sys_resetn),
       .axi_arid     (axi_mtx_slv0_arid),
@@ -779,7 +779,7 @@ module soc_top #(
   //--------------------------------------------------------------------------------
   // SLAVE1, UART
   //--------------------------------------------------------------------------------
-  axi_uart_controller U_axi_uart_controller (
+  axi_uart_controller u_axi_uart_controller (
       .clk          (sys_clk),
       .rst_n        (sys_resetn),
       .axi_s_awid   (axi_mtx_slv1_awid),
@@ -881,7 +881,7 @@ module soc_top #(
   //--------------------------------------------------------------------------------
   confreg #(
       .SIMULATION(SIMULATION)
-  ) U_confreg (
+  ) u_confreg (
       .aclk       (sys_clk),
       .aresetn    (sys_resetn),
       .cpu_clk    (cpu_clk),
@@ -929,6 +929,7 @@ module soc_top #(
       .touch_btn  (touch_btn),
       .confreg_int(confreg_int)
   );
+
 
 endmodule
 
