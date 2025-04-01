@@ -33,11 +33,11 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 `timescale 1ns / 1ps
 `include "config.h"
 
-`define UART_PSEL               u_soc_top.u_axi_uart_controller.uart0.PSEL
-`define UART_PENBLE             u_soc_top.u_axi_uart_controller.uart0.PENABLE
-`define UART_PWRITE             u_soc_top.u_axi_uart_controller.uart0.PWRITE
-`define UART_WADDR              u_soc_top.u_axi_uart_controller.uart0.PADDR[7:0]
-`define UART_WDATA              u_soc_top.u_axi_uart_controller.uart0.PWDATA[7:0]
+`define UART_PSEL               u_soc_top.u_uart.PSEL
+`define UART_PENBLE             u_soc_top.u_uart.PENABLE
+`define UART_PWRITE             u_soc_top.u_uart.PWRITE
+`define UART_WADDR              u_soc_top.u_uart.PADDR[7:0]
+`define UART_WDATA              u_soc_top.u_uart.PWDATA[7:0]
 
 module tb_top( );
 reg reset;
