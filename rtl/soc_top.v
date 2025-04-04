@@ -183,6 +183,8 @@ module soc_top #(
   wire [  0:0] axi_mtx_slv0_awlock;
   wire [  3:0] axi_mtx_slv0_awcache;
   wire [  2:0] axi_mtx_slv0_awprot;
+  wire [  3:0] axi_mtx_slv0_awregion;
+  wire [  3:0] axi_mtx_slv0_awqos;
   wire         axi_mtx_slv0_wvalid;
   wire         axi_mtx_slv0_wready;
   wire [ 31:0] axi_mtx_slv0_wdata;
@@ -202,6 +204,8 @@ module soc_top #(
   wire [  0:0] axi_mtx_slv0_arlock;
   wire [  3:0] axi_mtx_slv0_arcache;
   wire [  2:0] axi_mtx_slv0_arprot;
+  wire [  3:0] axi_mtx_slv0_arregion;
+  wire [  3:0] axi_mtx_slv0_arqos;
   wire         axi_mtx_slv0_rvalid;
   wire         axi_mtx_slv0_rready;
   wire [ 31:0] axi_mtx_slv0_rdata;
@@ -218,6 +222,8 @@ module soc_top #(
   wire [  0:0] axi_mtx_slv1_awlock;
   wire [  3:0] axi_mtx_slv1_awcache;
   wire [  2:0] axi_mtx_slv1_awprot;
+  wire [  3:0] axi_mtx_slv1_awregion;
+  wire [  3:0] axi_mtx_slv1_awqos;
   wire         axi_mtx_slv1_wvalid;
   wire         axi_mtx_slv1_wready;
   wire [ 31:0] axi_mtx_slv1_wdata;
@@ -237,6 +243,8 @@ module soc_top #(
   wire [  0:0] axi_mtx_slv1_arlock;
   wire [  3:0] axi_mtx_slv1_arcache;
   wire [  2:0] axi_mtx_slv1_arprot;
+  wire [  3:0] axi_mtx_slv1_arregion;
+  wire [  3:0] axi_mtx_slv1_arqos;
   wire         axi_mtx_slv1_rvalid;
   wire         axi_mtx_slv1_rready;
   wire [ 31:0] axi_mtx_slv1_rdata;
@@ -253,6 +261,8 @@ module soc_top #(
   wire [  0:0] axi_mtx_slv2_awlock;
   wire [  3:0] axi_mtx_slv2_awcache;
   wire [  2:0] axi_mtx_slv2_awprot;
+  wire [  3:0] axi_mtx_slv2_awregion;
+  wire [  3:0] axi_mtx_slv2_awqos;
   wire         axi_mtx_slv2_wvalid;
   wire         axi_mtx_slv2_wready;
   wire [ 31:0] axi_mtx_slv2_wdata;
@@ -272,6 +282,8 @@ module soc_top #(
   wire [  0:0] axi_mtx_slv2_arlock;
   wire [  3:0] axi_mtx_slv2_arcache;
   wire [  2:0] axi_mtx_slv2_arprot;
+  wire [  3:0] axi_mtx_slv2_arregion;
+  wire [  3:0] axi_mtx_slv2_arqos;
   wire         axi_mtx_slv2_rvalid;
   wire         axi_mtx_slv2_rready;
   wire [ 31:0] axi_mtx_slv2_rdata;
@@ -288,6 +300,8 @@ module soc_top #(
   wire [  0:0] axi_mtx_slv3_awlock;
   wire [  3:0] axi_mtx_slv3_awcache;
   wire [  2:0] axi_mtx_slv3_awprot;
+  wire [  3:0] axi_mtx_slv3_awregion;
+  wire [  3:0] axi_mtx_slv3_awqos;
   wire         axi_mtx_slv3_wvalid;
   wire         axi_mtx_slv3_wready;
   wire [ 31:0] axi_mtx_slv3_wdata;
@@ -307,6 +321,8 @@ module soc_top #(
   wire [  0:0] axi_mtx_slv3_arlock;
   wire [  3:0] axi_mtx_slv3_arcache;
   wire [  2:0] axi_mtx_slv3_arprot;
+  wire [  3:0] axi_mtx_slv3_arregion;
+  wire [  3:0] axi_mtx_slv3_arqos;
   wire         axi_mtx_slv3_rvalid;
   wire         axi_mtx_slv3_rready;
   wire [ 31:0] axi_mtx_slv3_rdata;
@@ -388,6 +404,22 @@ module soc_top #(
   //--------------------------------------------------------------------------------
   // AXI to APB
   //--------------------------------------------------------------------------------
+  wire [ 31:0] x2p_axi_awaddr;
+  wire         x2p_axi_awvalid;
+  wire         x2p_axi_awready;
+  wire [ 31:0] x2p_axi_wdata;
+  wire         x2p_axi_wvalid;
+  wire         x2p_axi_wready;
+  wire [  1:0] x2p_axi_bresp;
+  wire         x2p_axi_bvalid;
+  wire         x2p_axi_bready;
+  wire [ 31:0] x2p_axi_araddr;
+  wire         x2p_axi_arvalid;
+  wire         x2p_axi_arready;
+  wire [ 31:0] x2p_axi_rdata;
+  wire [  1:0] x2p_axi_rresp;
+  wire         x2p_axi_rvalid;
+  wire         x2p_axi_rready;
   wire [ 31:0] x2p_apb_paddr;
   wire [  3:0] x2p_apb_psel;
   wire         x2p_apb_penable;
@@ -614,7 +646,7 @@ module soc_top #(
       .axiOut_rlast  (axi_mtx_mst0_rlast)
   );
 
-  axi_crossbar_1x4 u_u_axi_crossbar_1x4 (
+  axi_crossbar u_axi_crossbar (
       .aclk          (sys_clk),         // input wire aclk
       .aresetn       (sys_resetn),      // input wire aresetn
       .s_axi_awid    (s_axi_awid),      // input wire [7 : 0] s_axi_awid
@@ -769,6 +801,8 @@ module soc_top #(
   assign {axi_mtx_slv3_awlock, axi_mtx_slv2_awlock, axi_mtx_slv1_awlock, axi_mtx_slv0_awlock} = m_axi_awlock;
   assign {axi_mtx_slv3_awcache, axi_mtx_slv2_awcache, axi_mtx_slv1_awcache, axi_mtx_slv0_awcache} = m_axi_awcache;
   assign {axi_mtx_slv3_awprot, axi_mtx_slv2_awprot, axi_mtx_slv1_awprot, axi_mtx_slv0_awprot} = m_axi_awprot;
+  assign {axi_mtx_slv3_awregion, axi_mtx_slv2_awregion, axi_mtx_slv1_awregion, axi_mtx_slv0_awregion} = m_axi_awregion;
+  assign {axi_mtx_slv3_awqos, axi_mtx_slv2_awqos, axi_mtx_slv1_awqos, axi_mtx_slv0_awqos} = m_axi_awqos;
   assign {axi_mtx_slv3_awvalid, axi_mtx_slv2_awvalid, axi_mtx_slv1_awvalid, axi_mtx_slv0_awvalid} = m_axi_awvalid;
   assign {axi_mtx_slv3_wdata, axi_mtx_slv2_wdata, axi_mtx_slv1_wdata, axi_mtx_slv0_wdata} = m_axi_wdata;
   assign {axi_mtx_slv3_wstrb, axi_mtx_slv2_wstrb, axi_mtx_slv1_wstrb, axi_mtx_slv0_wstrb} = m_axi_wstrb;
@@ -782,8 +816,14 @@ module soc_top #(
   assign {axi_mtx_slv3_arlock, axi_mtx_slv2_arlock, axi_mtx_slv1_arlock, axi_mtx_slv0_arlock} = m_axi_arlock;
   assign {axi_mtx_slv3_arcache, axi_mtx_slv2_arcache, axi_mtx_slv1_arcache, axi_mtx_slv0_arcache} = m_axi_arcache;
   assign {axi_mtx_slv3_arprot, axi_mtx_slv2_arprot, axi_mtx_slv1_arprot, axi_mtx_slv0_arprot} = m_axi_arprot;
+  assign {axi_mtx_slv3_arregion, axi_mtx_slv2_arregion, axi_mtx_slv1_arregion, axi_mtx_slv0_arregion} = m_axi_arregion;
+  assign {axi_mtx_slv3_arqos, axi_mtx_slv2_arqos, axi_mtx_slv1_arqos, axi_mtx_slv0_arqos} = m_axi_arqos;
   assign {axi_mtx_slv3_arvalid, axi_mtx_slv2_arvalid, axi_mtx_slv1_arvalid, axi_mtx_slv0_arvalid} = m_axi_arvalid;
   assign {axi_mtx_slv3_rready, axi_mtx_slv2_rready, axi_mtx_slv1_rready, axi_mtx_slv0_rready} = m_axi_rready;
+
+  // BUS MATRIX slave unused signals (SASD)
+  assign {axi_mtx_slv3_awid, axi_mtx_slv2_awid, axi_mtx_slv1_awid, axi_mtx_slv0_awid} = 20'b0;
+  assign {axi_mtx_slv3_arid, axi_mtx_slv2_arid, axi_mtx_slv1_arid, axi_mtx_slv0_arid} = 20'b0;
 
 
   //--------------------------------------------------------------------------------
@@ -864,7 +904,7 @@ module soc_top #(
   //--------------------------------------------------------------------------------
   dma_axi32 u_dmac (
       .clk          (sys_clk),
-      .reset        (sys_resetn),
+      .reset        (~sys_resetn),
       .scan_en      (1'b0),
       .idle         (),
       .INT          (dmac_int),
@@ -883,8 +923,8 @@ module soc_top #(
       .pready       (dmac_pready),
       .AWID0        (axi_mtx_mst1_awid[3]),
       .AWADDR0      (axi_mtx_mst1_awaddr),
-      .AWLEN0       (axi_mtx_mst1_awlen),
-      .AWSIZE0      (axi_mtx_mst1_awsize),
+      .AWLEN0       (axi_mtx_mst1_awlen[3:0]),
+      .AWSIZE0      (axi_mtx_mst1_awsize[1:0]),
       .AWVALID0     (axi_mtx_mst1_awvalid),
       .AWREADY0     (axi_mtx_mst1_awready),
       .WID0         (),
@@ -899,8 +939,8 @@ module soc_top #(
       .BREADY0      (axi_mtx_mst1_bready),
       .ARID0        (axi_mtx_mst1_arid[3]),
       .ARADDR0      (axi_mtx_mst1_araddr),
-      .ARLEN0       (axi_mtx_mst1_arlen),
-      .ARSIZE0      (axi_mtx_mst1_arsize),
+      .ARLEN0       (axi_mtx_mst1_arlen[3:0]),
+      .ARSIZE0      (axi_mtx_mst1_arsize[1:0]),
       .ARVALID0     (axi_mtx_mst1_arvalid),
       .ARREADY0     (axi_mtx_mst1_arready),
       .RID0         (axi_mtx_mst1_rid[3]),
@@ -920,6 +960,10 @@ module soc_top #(
   assign axi_mtx_mst1_arid[2:0] = {3{1'b1}};
 
   // DMAC AXI unused signals
+  assign axi_mtx_mst1_awlen[7:4] = 4'b0;
+  assign axi_mtx_mst1_arlen[7:4] = 4'b0;
+  assign axi_mtx_mst1_awsize[2:2] = 1'b0;
+  assign axi_mtx_mst1_arsize[2:2] = 1'b0;
   assign axi_mtx_mst1_awburst = 2'b0;
   assign axi_mtx_mst1_awlock = 1'b0;
   assign axi_mtx_mst1_awcache = 4'b0;
@@ -943,7 +987,7 @@ module soc_top #(
       .axi_arlen    (axi_mtx_slv0_arlen),
       .axi_arsize   (axi_mtx_slv0_arsize),
       .axi_arburst  (axi_mtx_slv0_arburst),
-      .axi_arlock   (axi_mtx_slv0_arlock),
+      .axi_arlock   ({1'b0, axi_mtx_slv0_arlock}),
       .axi_arcache  (axi_mtx_slv0_arcache),
       .axi_arprot   (axi_mtx_slv0_arprot),
       .axi_arvalid  (axi_mtx_slv0_arvalid),
@@ -959,7 +1003,7 @@ module soc_top #(
       .axi_awlen    (axi_mtx_slv0_awlen),
       .axi_awsize   (axi_mtx_slv0_awsize),
       .axi_awburst  (axi_mtx_slv0_awburst),
-      .axi_awlock   (axi_mtx_slv0_awlock),
+      .axi_awlock   ({1'b0, axi_mtx_slv0_awlock}),
       .axi_awcache  (axi_mtx_slv0_awcache),
       .axi_awprot   (axi_mtx_slv0_awprot),
       .axi_awvalid  (axi_mtx_slv0_awvalid),
@@ -989,60 +1033,186 @@ module soc_top #(
 
 
   //--------------------------------------------------------------------------------
-  // SLAVE1, X2P
+  // SLAVE1, UART
   //--------------------------------------------------------------------------------
-  axi_apb_bridge_0 u_x2p (
-      .s_axi_aclk   (sys_clk),               // input wire s_axi_aclk
-      .s_axi_aresetn(sys_resetn),            // input wire s_axi_aresetn
-      .s_axi_awaddr (axi_mtx_slv1_awaddr),   // input wire [31 : 0] s_axi_awaddr
-      .s_axi_awvalid(axi_mtx_slv1_awvalid),  // input wire s_axi_awvalid
-      .s_axi_awready(axi_mtx_slv1_awready),  // output wire s_axi_awready
-      .s_axi_wdata  (axi_mtx_slv1_wdata),    // input wire [31 : 0] s_axi_wdata
-      .s_axi_wvalid (axi_mtx_slv1_wvalid),   // input wire s_axi_wvalid
-      .s_axi_wready (axi_mtx_slv1_wready),   // output wire s_axi_wready
-      .s_axi_bresp  (axi_mtx_slv1_bresp),    // output wire [1 : 0] s_axi_bresp
-      .s_axi_bvalid (axi_mtx_slv1_bvalid),   // output wire s_axi_bvalid
-      .s_axi_bready (axi_mtx_slv1_bready),   // input wire s_axi_bready
-      .s_axi_araddr (axi_mtx_slv1_araddr),   // input wire [31 : 0] s_axi_araddr
-      .s_axi_arvalid(axi_mtx_slv1_arvalid),  // input wire s_axi_arvalid
-      .s_axi_arready(axi_mtx_slv1_arready),  // output wire s_axi_arready
-      .s_axi_rdata  (axi_mtx_slv1_rdata),    // output wire [31 : 0] s_axi_rdata
-      .s_axi_rresp  (axi_mtx_slv1_rresp),    // output wire [1 : 0] s_axi_rresp
-      .s_axi_rvalid (axi_mtx_slv1_rvalid),   // output wire s_axi_rvalid
-      .s_axi_rready (axi_mtx_slv1_rready),   // input wire s_axi_rready
-      .m_apb_paddr  (x2p_apb_paddr),         // output wire [31 : 0] m_apb_paddr
-      .m_apb_psel   (x2p_apb_psel),          // output wire [3 : 0] m_apb_psel
-      .m_apb_penable(x2p_apb_penable),       // output wire m_apb_penable
-      .m_apb_pwrite (x2p_apb_pwrite),        // output wire m_apb_pwrite
-      .m_apb_pwdata (x2p_apb_pwdata),        // output wire [31 : 0] m_apb_pwdata
-      .m_apb_pready (x2p_apb_pready),        // input wire [3 : 0] m_apb_pready
-      .m_apb_prdata (x2p_apb_prdata),        // input wire [31 : 0] m_apb_prdata
-      .m_apb_prdata2(x2p_apb_prdata2),       // input wire [31 : 0] m_apb_prdata2
-      .m_apb_prdata3(x2p_apb_prdata3),       // input wire [31 : 0] m_apb_prdata3
-      .m_apb_prdata4(x2p_apb_prdata4),       // input wire [31 : 0] m_apb_prdata4
-      .m_apb_pslverr(x2p_apb_pslverr)        // input wire [3 : 0] m_apb_pslverr
+  axi_uart_controller u_axi_uart_controller (
+      .clk          (sys_clk),
+      .rst_n        (sys_resetn),
+      .axi_s_awid   (axi_mtx_slv1_awid),
+      .axi_s_awaddr (axi_mtx_slv1_awaddr),
+      .axi_s_awlen  (axi_mtx_slv1_awlen),
+      .axi_s_awsize (axi_mtx_slv1_awsize),
+      .axi_s_awburst(axi_mtx_slv1_awburst),
+      .axi_s_awlock (axi_mtx_slv1_awlock),
+      .axi_s_awcache(axi_mtx_slv1_awcache),
+      .axi_s_awprot (axi_mtx_slv1_awprot),
+      .axi_s_awvalid(axi_mtx_slv1_awvalid),
+      .axi_s_awready(axi_mtx_slv1_awready),
+      .axi_s_wid    (5'b0),
+      .axi_s_wdata  (axi_mtx_slv1_wdata),
+      .axi_s_wstrb  (axi_mtx_slv1_wstrb),
+      .axi_s_wlast  (axi_mtx_slv1_wlast),
+      .axi_s_wvalid (axi_mtx_slv1_wvalid),
+      .axi_s_wready (axi_mtx_slv1_wready),
+      .axi_s_bid    (axi_mtx_slv1_bid),
+      .axi_s_bresp  (axi_mtx_slv1_bresp),
+      .axi_s_bvalid (axi_mtx_slv1_bvalid),
+      .axi_s_bready (axi_mtx_slv1_bready),
+      .axi_s_arid   (axi_mtx_slv1_arid),
+      .axi_s_araddr (axi_mtx_slv1_araddr),
+      .axi_s_arlen  (axi_mtx_slv1_arlen),
+      .axi_s_arsize (axi_mtx_slv1_arsize),
+      .axi_s_arburst(axi_mtx_slv1_arburst),
+      .axi_s_arlock (axi_mtx_slv1_arlock),
+      .axi_s_arcache(axi_mtx_slv1_arcache),
+      .axi_s_arprot (axi_mtx_slv1_arprot),
+      .axi_s_arvalid(axi_mtx_slv1_arvalid),
+      .axi_s_arready(axi_mtx_slv1_arready),
+      .axi_s_rid    (axi_mtx_slv1_rid),
+      .axi_s_rdata  (axi_mtx_slv1_rdata),
+      .axi_s_rresp  (axi_mtx_slv1_rresp),
+      .axi_s_rlast  (axi_mtx_slv1_rlast),
+      .axi_s_rvalid (axi_mtx_slv1_rvalid),
+      .axi_s_rready (axi_mtx_slv1_rready),
+      .apb_rw_dma   (1'b0),
+      .apb_psel_dma (1'b0),
+      .apb_enab_dma (1'b0),
+      .apb_addr_dma (20'b0),
+      .apb_valid_dma(1'b0),
+      .apb_wdata_dma(32'b0),
+      .apb_rdata_dma(),
+      .apb_ready_dma(),
+      .dma_grant    (),
+      .dma_req_o    (),
+      .dma_ack_i    (1'b0),
+      .uart0_txd_i  (uart0_txd_i),
+      .uart0_txd_o  (uart0_txd_o),
+      .uart0_txd_oe (uart0_txd_oe),
+      .uart0_rxd_i  (uart0_rxd_i),
+      .uart0_rxd_o  (uart0_rxd_o),
+      .uart0_rxd_oe (uart0_rxd_oe),
+      .uart0_rts_o  (uart0_rts_o),
+      .uart0_dtr_o  (uart0_dtr_o),
+      .uart0_cts_i  (uart0_cts_i),
+      .uart0_dsr_i  (uart0_dsr_i),
+      .uart0_dcd_i  (uart0_dcd_i),
+      .uart0_ri_i   (uart0_ri_i),
+      .uart0_int    (uart0_int)
   );
 
-  // X2P AXI unused signals
-  assign axi_mtx_slv1_rid = 5'b0;
-  assign axi_mtx_slv1_rlast = 1'b0;
-  assign axi_mtx_slv1_bid = 5'b0;
+  assign UART_CTS = 1'b0;
+  assign UART_DSR = 1'b0;
+  assign UART_DCD = 1'b0;
+  assign UART_RI = 1'b0;
+  assign UART_RX = uart0_rxd_oe ? 1'bz : uart0_rxd_o;
+  assign UART_TX = uart0_txd_oe ? 1'bz : uart0_txd_o;
+  assign UART_RTS = uart0_rts_o;
+  assign UART_DTR = uart0_dtr_o;
+  assign uart0_txd_i = UART_TX;
+  assign uart0_rxd_i = UART_RX;
+  assign uart0_cts_i = UART_CTS;
+  assign uart0_dcd_i = UART_DCD;
+  assign uart0_dsr_i = UART_DSR;
+  assign uart0_ri_i = UART_RI;
 
 
   //--------------------------------------------------------------------------------
-  // SLAVE2, RESERVED
+  // SLAVE2, X2P
   //--------------------------------------------------------------------------------
-  assign axi_mtx_slv2_arready = 1'b1;
-  assign axi_mtx_slv2_rid = 5'b0;
-  assign axi_mtx_slv2_rdata = 32'b0;
-  assign axi_mtx_slv2_rresp = 2'b0;
-  assign axi_mtx_slv2_rlast = 1'b0;
-  assign axi_mtx_slv2_rvalid = 1'b0;
-  assign axi_mtx_slv2_awready = 1'b1;
-  assign axi_mtx_slv2_wready = 1'b1;
-  assign axi_mtx_slv2_bid = 5'b0;
-  assign axi_mtx_slv2_bresp = 2'b0;
-  assign axi_mtx_slv2_bvalid = 1'b0;
+  x2xl u_x2xl (
+      .aclk          (sys_clk),                // input wire aclk
+      .aresetn       (sys_resetn),             // input wire aresetn
+      .s_axi_awid    (axi_mtx_slv2_awid),      // input wire [4 : 0] s_axi_awid
+      .s_axi_awaddr  (axi_mtx_slv2_awaddr),    // input wire [31 : 0] s_axi_awaddr
+      .s_axi_awlen   (axi_mtx_slv2_awlen),     // input wire [7 : 0] s_axi_awlen
+      .s_axi_awsize  (axi_mtx_slv2_awsize),    // input wire [2 : 0] s_axi_awsize
+      .s_axi_awburst (axi_mtx_slv2_awburst),   // input wire [1 : 0] s_axi_awburst
+      .s_axi_awlock  (axi_mtx_slv2_awlock),    // input wire [0 : 0] s_axi_awlock
+      .s_axi_awcache (axi_mtx_slv2_awcache),   // input wire [3 : 0] s_axi_awcache
+      .s_axi_awprot  (axi_mtx_slv2_awprot),    // input wire [2 : 0] s_axi_awprot
+      .s_axi_awregion(axi_mtx_slv2_awregion),  // input wire [3 : 0] s_axi_awregion
+      .s_axi_awqos   (axi_mtx_slv2_awqos),     // input wire [3 : 0] s_axi_awqos
+      .s_axi_awvalid (axi_mtx_slv2_awvalid),   // input wire s_axi_awvalid
+      .s_axi_awready (axi_mtx_slv2_awready),   // output wire s_axi_awready
+      .s_axi_wdata   (axi_mtx_slv2_wdata),     // input wire [31 : 0] s_axi_wdata
+      .s_axi_wstrb   (axi_mtx_slv2_wstrb),     // input wire [3 : 0] s_axi_wstrb
+      .s_axi_wlast   (axi_mtx_slv2_wlast),     // input wire s_axi_wlast
+      .s_axi_wvalid  (axi_mtx_slv2_wvalid),    // input wire s_axi_wvalid
+      .s_axi_wready  (axi_mtx_slv2_wready),    // output wire s_axi_wready
+      .s_axi_bid     (axi_mtx_slv2_bid),       // output wire [4 : 0] s_axi_bid
+      .s_axi_bresp   (axi_mtx_slv2_bresp),     // output wire [1 : 0] s_axi_bresp
+      .s_axi_bvalid  (axi_mtx_slv2_bvalid),    // output wire s_axi_bvalid
+      .s_axi_bready  (axi_mtx_slv2_bready),    // input wire s_axi_bready
+      .s_axi_arid    (axi_mtx_slv2_arid),      // input wire [4 : 0] s_axi_arid
+      .s_axi_araddr  (axi_mtx_slv2_araddr),    // input wire [31 : 0] s_axi_araddr
+      .s_axi_arlen   (axi_mtx_slv2_arlen),     // input wire [7 : 0] s_axi_arlen
+      .s_axi_arsize  (axi_mtx_slv2_arsize),    // input wire [2 : 0] s_axi_arsize
+      .s_axi_arburst (axi_mtx_slv2_arburst),   // input wire [1 : 0] s_axi_arburst
+      .s_axi_arlock  (axi_mtx_slv2_arlock),    // input wire [0 : 0] s_axi_arlock
+      .s_axi_arcache (axi_mtx_slv2_arcache),   // input wire [3 : 0] s_axi_arcache
+      .s_axi_arprot  (axi_mtx_slv2_arprot),    // input wire [2 : 0] s_axi_arprot
+      .s_axi_arregion(axi_mtx_slv2_arregion),  // input wire [3 : 0] s_axi_arregion
+      .s_axi_arqos   (axi_mtx_slv2_arqos),     // input wire [3 : 0] s_axi_arqos
+      .s_axi_arvalid (axi_mtx_slv2_arvalid),   // input wire s_axi_arvalid
+      .s_axi_arready (axi_mtx_slv2_arready),   // output wire s_axi_arready
+      .s_axi_rid     (axi_mtx_slv2_rid),       // output wire [4 : 0] s_axi_rid
+      .s_axi_rdata   (axi_mtx_slv2_rdata),     // output wire [31 : 0] s_axi_rdata
+      .s_axi_rresp   (axi_mtx_slv2_rresp),     // output wire [1 : 0] s_axi_rresp
+      .s_axi_rlast   (axi_mtx_slv2_rlast),     // output wire s_axi_rlast
+      .s_axi_rvalid  (axi_mtx_slv2_rvalid),    // output wire s_axi_rvalid
+      .s_axi_rready  (axi_mtx_slv2_rready),    // input wire s_axi_rready
+      .m_axi_awaddr  (x2p_axi_awaddr),         // output wire [31 : 0] m_axi_awaddr
+      .m_axi_awprot  (),                       // output wire [2 : 0] m_axi_awprot
+      .m_axi_awvalid (x2p_axi_awvalid),        // output wire m_axi_awvalid
+      .m_axi_awready (x2p_axi_awready),        // input wire m_axi_awready
+      .m_axi_wdata   (x2p_axi_wdata),          // output wire [31 : 0] m_axi_wdata
+      .m_axi_wstrb   (),                       // output wire [3 : 0] m_axi_wstrb
+      .m_axi_wvalid  (x2p_axi_wvalid),         // output wire m_axi_wvalid
+      .m_axi_wready  (x2p_axi_wready),         // input wire m_axi_wready
+      .m_axi_bresp   (x2p_axi_bresp),          // input wire [1 : 0] m_axi_bresp
+      .m_axi_bvalid  (x2p_axi_bvalid),         // input wire m_axi_bvalid
+      .m_axi_bready  (x2p_axi_bready),         // output wire m_axi_bready
+      .m_axi_araddr  (x2p_axi_araddr),         // output wire [31 : 0] m_axi_araddr
+      .m_axi_arprot  (),                       // output wire [2 : 0] m_axi_arprot
+      .m_axi_arvalid (x2p_axi_arvalid),        // output wire m_axi_arvalid
+      .m_axi_arready (x2p_axi_arready),        // input wire m_axi_arready
+      .m_axi_rdata   (x2p_axi_rdata),          // input wire [31 : 0] m_axi_rdata
+      .m_axi_rresp   (x2p_axi_rresp),          // input wire [1 : 0] m_axi_rresp
+      .m_axi_rvalid  (x2p_axi_rvalid),         // input wire m_axi_rvalid
+      .m_axi_rready  (x2p_axi_rready)          // output wire m_axi_rready
+  );
+
+  x2p u_x2p (
+      .s_axi_aclk   (sys_clk),          // input wire s_axi_aclk
+      .s_axi_aresetn(sys_resetn),       // input wire s_axi_aresetn
+      .s_axi_awaddr (x2p_axi_awaddr),   // input wire [31 : 0] s_axi_awaddr
+      .s_axi_awvalid(x2p_axi_awvalid),  // input wire s_axi_awvalid
+      .s_axi_awready(x2p_axi_awready),  // output wire s_axi_awready
+      .s_axi_wdata  (x2p_axi_wdata),    // input wire [31 : 0] s_axi_wdata
+      .s_axi_wvalid (x2p_axi_wvalid),   // input wire s_axi_wvalid
+      .s_axi_wready (x2p_axi_wready),   // output wire s_axi_wready
+      .s_axi_bresp  (x2p_axi_bresp),    // output wire [1 : 0] s_axi_bresp
+      .s_axi_bvalid (x2p_axi_bvalid),   // output wire s_axi_bvalid
+      .s_axi_bready (x2p_axi_bready),   // input wire s_axi_bready
+      .s_axi_araddr (x2p_axi_araddr),   // input wire [31 : 0] s_axi_araddr
+      .s_axi_arvalid(x2p_axi_arvalid),  // input wire s_axi_arvalid
+      .s_axi_arready(x2p_axi_arready),  // output wire s_axi_arready
+      .s_axi_rdata  (x2p_axi_rdata),    // output wire [31 : 0] s_axi_rdata
+      .s_axi_rresp  (x2p_axi_rresp),    // output wire [1 : 0] s_axi_rresp
+      .s_axi_rvalid (x2p_axi_rvalid),   // output wire s_axi_rvalid
+      .s_axi_rready (x2p_axi_rready),   // input wire s_axi_rready
+      .m_apb_paddr  (x2p_apb_paddr),    // output wire [31 : 0] m_apb_paddr
+      .m_apb_psel   (x2p_apb_psel),     // output wire [3 : 0] m_apb_psel
+      .m_apb_penable(x2p_apb_penable),  // output wire m_apb_penable
+      .m_apb_pwrite (x2p_apb_pwrite),   // output wire m_apb_pwrite
+      .m_apb_pwdata (x2p_apb_pwdata),   // output wire [31 : 0] m_apb_pwdata
+      .m_apb_pready (x2p_apb_pready),   // input wire [3 : 0] m_apb_pready
+      .m_apb_prdata (x2p_apb_prdata),   // input wire [31 : 0] m_apb_prdata
+      .m_apb_prdata2(x2p_apb_prdata2),  // input wire [31 : 0] m_apb_prdata2
+      .m_apb_prdata3(x2p_apb_prdata3),  // input wire [31 : 0] m_apb_prdata3
+      .m_apb_prdata4(x2p_apb_prdata4),  // input wire [31 : 0] m_apb_prdata4
+      .m_apb_pslverr(x2p_apb_pslverr)   // input wire [3 : 0] m_apb_pslverr
+  );
 
 
   //--------------------------------------------------------------------------------
@@ -1101,51 +1271,9 @@ module soc_top #(
 
 
   //--------------------------------------------------------------------------------
-  // APB SLAVE0, UART
+  // APB SLAVE0, RESERVED
   //--------------------------------------------------------------------------------
-  UART_TOP u_uart (
-      .PCLK       (sys_clk),
-      .PRST_      (sys_resetn),
-      .PSEL       (x2p_apb_psel[0]),
-      .PENABLE    (x2p_apb_penable),
-      .PADDR      (x2p_apb_paddr[7:0]),
-      .PWRITE     (x2p_apb_pwrite),
-      .PWDATA     (x2p_apb_pwdata[7:0]),
-      .URT_PRDATA (x2p_apb_prdata[7:0]),
-      .INT        (uart0_int),
-      .clk_carrier(1'b0),
-      .TXD_i      (uart0_txd_i),
-      .TXD_o      (uart0_txd_o),
-      .TXD_oe     (uart0_txd_oe),
-      .RXD_i      (uart0_rxd_i),
-      .RXD_o      (uart0_rxd_o),
-      .RXD_oe     (uart0_rxd_oe),
-      .RTS        (UART_RTS),
-      .CTS        (UART_CTS),
-      .DSR        (UART_DSR),
-      .DCD        (UART_DCD),
-      .DTR        (UART_DTR),
-      .RI         (UART_RI)
-  );
-
-  // UART IO control
-  assign UART_CTS = 1'b0;
-  assign UART_DSR = 1'b0;
-  assign UART_DCD = 1'b0;
-  assign UART_RI = 1'b0;
-  assign UART_RX = uart0_rxd_oe ? 1'bz : uart0_rxd_o;
-  assign UART_TX = uart0_txd_oe ? 1'bz : uart0_txd_o;
-  assign UART_RTS = uart0_rts_o;
-  assign UART_DTR = uart0_dtr_o;
-  assign uart0_txd_i = UART_TX;
-  assign uart0_rxd_i = UART_RX;
-  assign uart0_cts_i = UART_CTS;
-  assign uart0_dcd_i = UART_DCD;
-  assign uart0_dsr_i = UART_DSR;
-  assign uart0_ri_i = UART_RI;
-
-  // UART APB unused signals
-  assign x2p_apb_prdata[31:8] = 24'b0;
+  assign x2p_apb_prdata = 32'b0;
   assign x2p_apb_pready[0] = 1'b1;
   assign x2p_apb_pslverr[0] = 1'b0;
 
@@ -1175,8 +1303,29 @@ module soc_top #(
   //--------------------------------------------------------------------------------
   // APB SLAVE3, RESERVED
   //--------------------------------------------------------------------------------
-  assign x2p_apb_prdata4 = 32'b0;
-  assign x2p_apb_pready[3] = 1'b1;
+  // assign x2p_apb_prdata4 = 32'b0;
+  // assign x2p_apb_pready[3] = 1'b1;
+  // assign x2p_apb_pslverr[3] = 1'b0;
+
+  // dummy slave
+  reg [31:0] prdata;
+  reg pready;
+  always @(posedge sys_clk or negedge sys_resetn) begin
+    if (!sys_resetn) begin
+      prdata <= 32'b0;
+      pready <= 1'b1;
+    end else begin
+      if (x2p_apb_paddr == 32'h1F130000 && x2p_apb_psel[3]) begin
+        prdata <= 32'hDEADBEEF;
+        pready <= 1'b1;
+      end else begin
+        prdata <= 32'b0;
+        pready <= 1'b1;
+      end
+    end
+  end
+  assign x2p_apb_prdata4 = prdata;
+  assign x2p_apb_pready[3] = pready;
   assign x2p_apb_pslverr[3] = 1'b0;
 
 
