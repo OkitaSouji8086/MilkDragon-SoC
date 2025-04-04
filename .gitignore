@@ -1,2 +1,17 @@
+# FPGA project
 fpga/fpga/*
 fpga/project/*
+
+# Compile output
+sdk/axi_ram.mif
+sdk/*.bin
+sdk/software/examples/*/obj
+
+# SDK build output
+sdk/toolchains/loongson-gnu-toolchain-8.3-x86_64-loongarch32r-linux-gnusf-v2.0
+sdk/toolchains/newlib
+sdk/toolchains/picolibc
+sdk/toolchains/loongson-gnu-toolchain-8.3-x86_64-loongarch32r-linux-gnusf-v2.0.tar.xz
+
+# .vscode
+.vscode
