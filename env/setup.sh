@@ -3,6 +3,11 @@
 cur_path=$(pwd)
 export PRJ_PATH=$cur_path
 
+init(){
+    cd "$PRJ_PATH/sdk/toolchains"
+    ./init.sh
+    source ~/.bashrc
+}
 rduv(){
     cd "$PRJ_PATH/rtl/$1" && ls
 }

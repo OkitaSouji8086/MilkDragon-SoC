@@ -15,5 +15,5 @@ cd ..
 
 current_dir=$(pwd)
 echo "export PATH=$current_dir/loongson-gnu-toolchain-8.3-x86_64-loongarch32r-linux-gnusf-v2.0/bin:\$PATH" >> ~/.bashrc
-sed -i '$a\export CICIEC_WINDOWS_HOME="/mnt/d/la32r_soc_ciciec"' ~/.bashrc
+echo "export CICIEC_WINDOWS_HOME=$PRJ_PATH" >> ~/.bashrc
 source ~/.bashrc
