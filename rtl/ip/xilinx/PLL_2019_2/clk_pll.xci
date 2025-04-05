@@ -4,7 +4,7 @@
     "xci_name": "clk_pll",
     "component_reference": "xilinx.com:ip:clk_wiz:6.0",
     "ip_revision": "14",
-    "gen_directory": "../../../fpga/project/ipgen/clk_pll",
+    "gen_directory": "../../../../fpga/project/ipgen/clk_pll",
     "parameters": {
       "component_parameters": {
         "Component_Name": [ { "value": "clk_pll", "resolve_type": "user", "usage": "all" } ],
@@ -600,9 +600,9 @@
         "IPCONTEXT": [ { "value": "IP_Flow" } ],
         "IPREVISION": [ { "value": "14" } ],
         "MANAGED": [ { "value": "TRUE" } ],
-        "OUTPUTDIR": [ { "value": "../../../fpga/project/ipgen/clk_pll" } ],
+        "OUTPUTDIR": [ { "value": "../../../../fpga/project/ipgen/clk_pll" } ],
         "SELECTEDSIMMODEL": [ { "value": "" } ],
-        "SHAREDDIR": [ { "value": "../../../fpga/project/ipgen/clk_pll" } ],
+        "SHAREDDIR": [ { "value": "." } ],
         "SWVERSION": [ { "value": "2024.1.1" } ],
         "SYNTHESISFLOW": [ { "value": "OUT_OF_CONTEXT" } ]
       }

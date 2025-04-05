@@ -1,5 +1,4 @@
 # FPGA project
-fpga/fpga/*
 fpga/project/*
 
 # Compile output
