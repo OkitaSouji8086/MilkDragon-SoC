@@ -224,7 +224,7 @@ module axi2sram_sp_ext #(
                 if (s_wvalid) begin
                     req_o          = 1'b1;
                     we_o           = 1'b1;
-                    state_d        = (s_wlast) ? SEND_B : WRITE;
+                    state_d        = (s_wlast) ? SEND_B : WRITE_NOP;
                     cnt_d          = 1;
                 end
             end
