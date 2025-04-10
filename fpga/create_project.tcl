@@ -12,10 +12,7 @@ add_files -scan_for_includes ../rtl
 
 # Add IPs
 add_files -norecurse -scan_for_includes ../rtl/ip/xilinx/PLL_2019_2/clk_pll.xci
-add_files -norecurse -scan_for_includes ../rtl/ip/xilinx/axi_crossbar/axi_crossbar.xci
 add_files -norecurse -scan_for_includes ../rtl/ip/xilinx/x2h/x2h.xci
-add_files -norecurse -scan_for_includes ../rtl/ip/xilinx/x2p/x2p.xci
-add_files -norecurse -scan_for_includes ../rtl/ip/xilinx/x2xl/x2xl.xci
 
 # Add simulation files
 add_files -fileset sim_1 ../sim/
