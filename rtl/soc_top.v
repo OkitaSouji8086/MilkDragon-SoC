@@ -405,15 +405,18 @@ module soc_top #(
   // AXI to APB
   //--------------------------------------------------------------------------------
   wire [ 31:0] x2p_axi_awaddr;
+  wire [  2:0] x2p_axi_awprot;
   wire         x2p_axi_awvalid;
   wire         x2p_axi_awready;
   wire [ 31:0] x2p_axi_wdata;
+  wire [  3:0] x2p_axi_wstrb;
   wire         x2p_axi_wvalid;
   wire         x2p_axi_wready;
   wire [  1:0] x2p_axi_bresp;
   wire         x2p_axi_bvalid;
   wire         x2p_axi_bready;
   wire [ 31:0] x2p_axi_araddr;
+  wire [  2:0] x2p_axi_arprot;
   wire         x2p_axi_arvalid;
   wire         x2p_axi_arready;
   wire [ 31:0] x2p_axi_rdata;
@@ -1189,18 +1192,18 @@ module soc_top #(
       .s_axi_rvalid  (axi_mtx_slv2_rvalid),
       .s_axi_rready  (axi_mtx_slv2_rready),
       .m_axil_awaddr (x2p_axi_awaddr),
-      .m_axil_awprot (),
+      .m_axil_awprot (x2p_axi_awprot),
       .m_axil_awvalid(x2p_axi_awvalid),
       .m_axil_awready(x2p_axi_awready),
       .m_axil_wdata  (x2p_axi_wdata),
-      .m_axil_wstrb  (),
+      .m_axil_wstrb  (x2p_axi_wstrb),
       .m_axil_wvalid (x2p_axi_wvalid),
       .m_axil_wready (x2p_axi_wready),
       .m_axil_bresp  (x2p_axi_bresp),
       .m_axil_bvalid (x2p_axi_bvalid),
       .m_axil_bready (x2p_axi_bready),
       .m_axil_araddr (x2p_axi_araddr),
-      .m_axil_arprot (),
+      .m_axil_arprot (x2p_axi_arport),
       .m_axil_arvalid(x2p_axi_arvalid),
       .m_axil_arready(x2p_axi_arready),
       .m_axil_rdata  (x2p_axi_rdata),
@@ -1209,36 +1212,59 @@ module soc_top #(
       .m_axil_rready (x2p_axi_rready)
   );
 
-  x2p u_x2p (
-      .s_axi_aclk   (sys_clk),          // input wire s_axi_aclk
-      .s_axi_aresetn(sys_resetn),       // input wire s_axi_aresetn
-      .s_axi_awaddr (x2p_axi_awaddr),   // input wire [31 : 0] s_axi_awaddr
-      .s_axi_awvalid(x2p_axi_awvalid),  // input wire s_axi_awvalid
-      .s_axi_awready(x2p_axi_awready),  // output wire s_axi_awready
-      .s_axi_wdata  (x2p_axi_wdata),    // input wire [31 : 0] s_axi_wdata
-      .s_axi_wvalid (x2p_axi_wvalid),   // input wire s_axi_wvalid
-      .s_axi_wready (x2p_axi_wready),   // output wire s_axi_wready
-      .s_axi_bresp  (x2p_axi_bresp),    // output wire [1 : 0] s_axi_bresp
-      .s_axi_bvalid (x2p_axi_bvalid),   // output wire s_axi_bvalid
-      .s_axi_bready (x2p_axi_bready),   // input wire s_axi_bready
-      .s_axi_araddr (x2p_axi_araddr),   // input wire [31 : 0] s_axi_araddr
-      .s_axi_arvalid(x2p_axi_arvalid),  // input wire s_axi_arvalid
-      .s_axi_arready(x2p_axi_arready),  // output wire s_axi_arready
-      .s_axi_rdata  (x2p_axi_rdata),    // output wire [31 : 0] s_axi_rdata
-      .s_axi_rresp  (x2p_axi_rresp),    // output wire [1 : 0] s_axi_rresp
-      .s_axi_rvalid (x2p_axi_rvalid),   // output wire s_axi_rvalid
-      .s_axi_rready (x2p_axi_rready),   // input wire s_axi_rready
-      .m_apb_paddr  (x2p_apb_paddr),    // output wire [31 : 0] m_apb_paddr
-      .m_apb_psel   (x2p_apb_psel),     // output wire [3 : 0] m_apb_psel
-      .m_apb_penable(x2p_apb_penable),  // output wire m_apb_penable
-      .m_apb_pwrite (x2p_apb_pwrite),   // output wire m_apb_pwrite
-      .m_apb_pwdata (x2p_apb_pwdata),   // output wire [31 : 0] m_apb_pwdata
-      .m_apb_pready (x2p_apb_pready),   // input wire [3 : 0] m_apb_pready
-      .m_apb_prdata (x2p_apb_prdata),   // input wire [31 : 0] m_apb_prdata
-      .m_apb_prdata2(x2p_apb_prdata2),  // input wire [31 : 0] m_apb_prdata2
-      .m_apb_prdata3(x2p_apb_prdata3),  // input wire [31 : 0] m_apb_prdata3
-      .m_apb_prdata4(x2p_apb_prdata4),  // input wire [31 : 0] m_apb_prdata4
-      .m_apb_pslverr(x2p_apb_pslverr)   // input wire [3 : 0] m_apb_pslverr
+  axi_apb_bridge #(
+      .c_apb_num_slaves(4),
+      .memory_regions1 ({32'h1F130000, 32'h1F120000, 32'h1F110000, 32'h1F100000}),
+      .memory_regions2 ({32'h1F13FFFF, 32'h1F12FFFF, 32'h1F11FFFF, 32'h1F10FFFF}),
+      .timeout_val     (16),
+      .APB_Protocol    (3)
+  ) u_x2p (
+      .s_axi_clk     (sys_clk),
+      .s_axi_aresetn (sys_resetn),
+      .s_axi_awaddr  (x2p_axi_awaddr),
+      .s_axi_awvalid (x2p_axi_awvalid),
+      .s_axi_awready (x2p_axi_awready),
+      .s_axi_wdata   (x2p_axi_wdata),
+      .s_axi_wvalid  (x2p_axi_wvalid),
+      .s_axi_wstrb   (x2p_axi_wstrb),
+      .s_axi_wready  (x2p_axi_wready),
+      .s_axi_bresp   (x2p_axi_bresp),
+      .s_axi_bvalid  (x2p_axi_bvalid),
+      .s_axi_bready  (x2p_axi_bready),
+      .s_axi_araddr  (x2p_axi_araddr),
+      .s_axi_arvalid (x2p_axi_arvalid),
+      .s_axi_arready (x2p_axi_arready),
+      .s_axi_rresp   (x2p_axi_rresp),
+      .s_axi_rvalid  (x2p_axi_rvalid),
+      .s_axi_rdata   (x2p_axi_rdata),
+      .s_axi_rready  (x2p_axi_rready),
+      .s_axi_arprot  (x2p_axi_arprot),
+      .s_axi_awprot  (x2p_axi_awprot),
+      .m_apb_paddr   (x2p_apb_paddr),
+      .m_apb_pprot   (),
+      .m_apb_psel    (x2p_apb_psel),
+      .m_apb_penable (x2p_apb_penable),
+      .m_apb_pwrite  (x2p_apb_pwrite),
+      .m_apb_pwdata  (x2p_apb_pwdata),
+      .m_apb_pstrb   (),
+      .m_apb_pready  (x2p_apb_pready),
+      .m_apb_prdata  (x2p_apb_prdata),
+      .m_apb_prdata2 (x2p_apb_prdata2),
+      .m_apb_prdata3 (x2p_apb_prdata3),
+      .m_apb_prdata4 (x2p_apb_prdata4),
+      .m_apb_prdata5 (32'b0),
+      .m_apb_prdata6 (32'b0),
+      .m_apb_prdata7 (32'b0),
+      .m_apb_prdata8 (32'b0),
+      .m_apb_prdata9 (32'b0),
+      .m_apb_prdata10(32'b0),
+      .m_apb_prdata11(32'b0),
+      .m_apb_prdata12(32'b0),
+      .m_apb_prdata13(32'b0),
+      .m_apb_prdata14(32'b0),
+      .m_apb_prdata15(32'b0),
+      .m_apb_prdata16(32'b0),
+      .m_apb_pslverr (x2p_apb_pslverr)
   );
 
 
